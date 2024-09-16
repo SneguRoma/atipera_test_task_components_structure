@@ -13,7 +13,7 @@ The project is deployed here: https://endearing-kheer-14d00c.netlify.app/
 To run the project locally, follow these steps:
 
 ### Prerequisites
-* Node.js v14 or higher
+* Node.js v18.9.1  or higher
 * Angular CLI 18.2.2
 * Installation
 * Clone the repository:
