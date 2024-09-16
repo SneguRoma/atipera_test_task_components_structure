@@ -20,7 +20,7 @@ To run the project locally, follow these steps:
 
 ```bash
 git clone https://github.com/sneguroma/periodic-table-app-components-structure.git
-```bash
+```
 * Navigate to the project directory:
 
 ```bash
@@ -32,7 +32,7 @@ cd periodic-table-app-components-structure
 npm install
 ```
 * Running the Application
-To start the development server:
+ To start the development server:
 
 ```bash
 ng serve
