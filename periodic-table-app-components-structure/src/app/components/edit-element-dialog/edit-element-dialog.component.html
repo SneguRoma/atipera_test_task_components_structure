@@ -1,0 +1,19 @@
+<h3 class="modal-title">Edit Element</h3>
+<div class="modal-container" mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="dataCopy.name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Weight</mat-label>
+    <input matInput type="number" [(ngModel)]="dataCopy.weight">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Symbol</mat-label>
+    <input matInput [(ngModel)]="dataCopy.symbol">
+  </mat-form-field>
+</div>
+<div  mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="dataCopy" cdkFocusInitial>Save</button>
+</div>

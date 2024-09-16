@@ -1,0 +1,17 @@
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loading-spinner {
+  top: 50%;
+}
+
+.selected-row {
+  background-color: lightblue;
+}

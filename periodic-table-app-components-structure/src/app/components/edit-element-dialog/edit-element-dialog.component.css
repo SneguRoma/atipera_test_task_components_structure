@@ -1,0 +1,9 @@
+.modal-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-title {
+  margin: 10px;
+  text-align: center;
+}
