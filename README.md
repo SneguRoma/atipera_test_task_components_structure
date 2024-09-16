@@ -19,7 +19,7 @@ To run the project locally, follow these steps:
 * Clone the repository:
 
 ```bash
-git clone https://github.com/sneguroma/periodic-table-app-components-structure.git
+git clone https://github.com/SneguRoma/atipera_test_task_components_structure.git
 ```
 * Navigate to the project directory:
 
