@@ -7,7 +7,7 @@
 * Edit Functionality: Allows editing of table records via a dialog popup, with changes being reflected immediately after confirmation.
 * Angular Material: Uses Angular Material components to provide a modern and responsive UI.
 ### Live Demo
-The project is deployed here: https://endearing-kheer-14d00c.netlify.app/
+The project is deployed here: https://66eda3a760bee92014627054--famous-cobbler-8b7932.netlify.app/
 
 ### Getting Started
 To run the project locally, follow these steps:
