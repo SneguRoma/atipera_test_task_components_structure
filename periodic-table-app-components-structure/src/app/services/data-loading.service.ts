@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ELEMENT_DATA, PeriodicElement } from '../data';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, tap } from 'rxjs';
 import { rxState } from '@rx-angular/state';
 
 @Injectable({
@@ -12,7 +12,10 @@ export class DataLoadingService {
   });
 
   loadElements(): Observable<PeriodicElement[]> {
-    return of(ELEMENT_DATA).pipe(delay(1000));
+    return of(ELEMENT_DATA).pipe(
+      delay(1000),
+      tap((elements) => this.state.set({ elements })),
+    );
   }
 
   getElements(): Observable<PeriodicElement[]> {
