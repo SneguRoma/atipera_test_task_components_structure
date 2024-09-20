@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { rxState } from '@rx-angular/state';
 import { rxEffects } from '@rx-angular/state/effects';
 import { RxIf } from '@rx-angular/template/if';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-periodic-table',
@@ -24,6 +25,7 @@ import { RxIf } from '@rx-angular/template/if';
     MatInputModule,
     EditElementDialogComponent,
     RxIf,
+    CommonModule,
   ],
 })
 export class PeriodicTableComponent {
@@ -40,7 +42,7 @@ export class PeriodicTableComponent {
     set({ filter: '', isLoading: true });
   });
 
-  isLoading = this.state.select('isLoading');
+  isLoading$ = this.state.select('isLoading');
 
   readonly effects = rxEffects(({ register }) => {
     register(

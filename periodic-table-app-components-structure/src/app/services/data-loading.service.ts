@@ -22,10 +22,6 @@ export class DataLoadingService {
     return this.state.select('elements');
   }
 
-  setElements(elements: PeriodicElement[]): void {
-    this.state.set({ elements });
-  }
-
   updateElements(updateElement: PeriodicElement): void {
     this.state.set('elements', ({ elements }) => {
       return elements.map((element) =>
