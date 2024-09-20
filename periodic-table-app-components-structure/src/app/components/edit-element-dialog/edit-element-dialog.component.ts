@@ -32,11 +32,7 @@ import { MatInputModule } from '@angular/material/input';
 export class EditElementDialogComponent {
   readonly dialogRef = inject(MatDialogRef<EditElementDialogComponent>);
   readonly data = inject<PeriodicElement>(MAT_DIALOG_DATA);
-  dataCopy!: PeriodicElement;
-
-  constructor() {
-    this.dataCopy = { ...this.data };
-  }
+  dataCopy = { ...this.data };
 
   onNoClick(): void {
     this.dialogRef.close();

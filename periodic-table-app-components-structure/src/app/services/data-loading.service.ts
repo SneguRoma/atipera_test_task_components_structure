@@ -1,27 +1,29 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ELEMENT_DATA, PeriodicElement } from '../data';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, tap } from 'rxjs';
+import { rxState } from '@rx-angular/state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataLoadingService {
-  private elementsSignal = signal<PeriodicElement[]>([]);
+  private state = rxState<{ elements: PeriodicElement[] }>(({ set }) => {
+    set({ elements: [] });
+  });
 
   loadElements(): Observable<PeriodicElement[]> {
-    return of(ELEMENT_DATA).pipe(delay(1000));
+    return of(ELEMENT_DATA).pipe(
+      delay(1000),
+      tap((elements) => this.state.set({ elements })),
+    );
   }
 
-  getElements(): WritableSignal<PeriodicElement[]> {
-    return this.elementsSignal;
-  }
-
-  setElements(elements: PeriodicElement[]): void {
-    this.elementsSignal.set(elements);
+  getElements(): Observable<PeriodicElement[]> {
+    return this.state.select('elements');
   }
 
   updateElements(updateElement: PeriodicElement): void {
-    return this.elementsSignal.update((elements) => {
+    this.state.set('elements', ({ elements }) => {
       return elements.map((element) =>
         element.position === updateElement.position ? updateElement : element,
       );
