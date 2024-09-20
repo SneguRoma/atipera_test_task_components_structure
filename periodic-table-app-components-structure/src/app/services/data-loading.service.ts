@@ -1,4 +1,4 @@
-import { Injectable, Signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ELEMENT_DATA, PeriodicElement } from '../data';
 import { Observable, of, delay } from 'rxjs';
 import { rxState } from '@rx-angular/state';
@@ -10,15 +10,13 @@ export class DataLoadingService {
   private state = rxState<{ elements: PeriodicElement[] }>(({ set }) => {
     set({ elements: [] });
   });
-  private elementsSignal = this.state.signal('elements');
 
   loadElements(): Observable<PeriodicElement[]> {
     return of(ELEMENT_DATA).pipe(delay(1000));
   }
 
-  getElements(): Signal<PeriodicElement[]> {
-    console.log('get');
-    return this.elementsSignal;
+  getElements(): Observable<PeriodicElement[]> {
+    return this.state.select('elements');
   }
 
   setElements(elements: PeriodicElement[]): void {
@@ -26,11 +24,10 @@ export class DataLoadingService {
   }
 
   updateElements(updateElement: PeriodicElement): void {
-    this.state.set('elements', ({ elements }) =>
-      elements.map((element) =>
+    this.state.set('elements', ({ elements }) => {
+      return elements.map((element) =>
         element.position === updateElement.position ? updateElement : element,
-      ),
-    );
-    console.log('updateElement', updateElement);
+      );
+    });
   }
 }

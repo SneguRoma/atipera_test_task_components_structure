@@ -3,6 +3,8 @@
   <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input />
 </mat-form-field>
 
+
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <!-- Position Column -->
   <ng-container matColumnDef="position">
@@ -43,8 +45,15 @@
     </td>
   </tr>
 </table>
-@if (isLoading) {
+
+
+<!-- <ng-container *rxLet="isLoading$; let isLoading"> -->
+  <div *rxIf="isLoading" class="loading-spinner-container">
+    <mat-spinner class="loading-spinner"></mat-spinner>
+  </div>
+<!-- </ng-container> -->
+<!-- @if (isLoading) {
   <div class="loading-spinner-container">
     <mat-spinner class="loading-spinner"></mat-spinner>
   </div>
-}
+} -->

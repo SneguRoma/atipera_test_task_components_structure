@@ -15,14 +15,23 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   debounceTime,
   distinctUntilChanged,
+  endWith,
   first,
+  map,
+  startWith,
   Subject,
   Subscription,
+  switchMap,
   tap,
 } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { rxState } from '@rx-angular/state';
+import { rxEffects } from '@rx-angular/state/effects';
+import { RxIf } from '@rx-angular/template/if';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RxLet } from '@rx-angular/template/let';
 
 @Component({
   selector: 'app-periodic-table',
@@ -35,50 +44,76 @@ import { MatInputModule } from '@angular/material/input';
     MatTableModule,
     MatInputModule,
     EditElementDialogComponent,
+    RxIf,
+    RxLet,
+    ReactiveFormsModule,
   ],
 })
-export class PeriodicTableComponent implements OnInit, OnDestroy {
+export class PeriodicTableComponent {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource();
-  elements: Signal<PeriodicElement[]> = signal<PeriodicElement[]>([]);
+  private state = rxState<{
+    elements: PeriodicElement[];
+    filter: string;
+    isLoading: boolean;
+  }>(({ set }) => {
+    set({ elements: [], filter: '', isLoading: true });
+  });
+  effects = rxEffects();
+
   dialog = inject(MatDialog);
   filterSubject = new Subject<string>();
   filterSubscription: Subscription = new Subscription();
-  isLoading = true;
+
   selectedRow: PeriodicElement | null = null;
+  isLoading = this.state.select('isLoading');
+  elements$ = this.state.select('elements');
 
   constructor(private dataLoadingService: DataLoadingService) {
-    effect(() => {
-      this.dataSource.data = this.elements();
-    });
-  }
-  ngOnInit() {
-    this.dataLoadingService
-      .loadElements()
-      .pipe(first())
-      .subscribe((elements) => {
-        this.dataLoadingService.setElements(elements);
-        this.isLoading = false;
-      });
-    this.elements = this.dataLoadingService.getElements();
+    this.effects.register(
+      this.dataLoadingService
+        .loadElements()
+        .pipe(map((elements) => ({ elements, isLoading: false }))),
+      (result) => {
+        this.dataSource.data = result.elements;
 
-    this.filterSubscription = this.filterSubject
-      .pipe(
-        debounceTime(2000),
-        tap(() => {
-          this.isLoading = false;
+        this.dataLoadingService.setElements(result.elements);
+        this.state.set(result);
+      },
+    );
+
+    this.effects.register(
+      this.dataLoadingService.getElements().pipe(
+        map((elements) => {
+          console.log('dataLoadingService.getElements()', elements);
+          this.dataSource.data = elements;
         }),
+      ),
+    );
+
+    this.effects.register(
+      this.state.select('filter').pipe(
+        debounceTime(2000),
         distinctUntilChanged(),
-      )
-      .subscribe((filterValue) => {
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-      });
+        map((filter) => {
+          this.dataSource.filter = filter.trim().toLowerCase();
+        }),
+      ),
+    );
+    this.effects.register(
+      this.state.select('elements').pipe(
+        tap((elements) => {
+          this.dataSource.data = elements;
+        }),
+      ),
+    );
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.isLoading = true;
-    this.filterSubject.next(filterValue);
+
+    console.log('filter', filterValue);
+    this.state.set({ filter: filterValue, isLoading: false });
   }
 
   openDialog(row: PeriodicElement): void {
@@ -95,9 +130,5 @@ export class PeriodicTableComponent implements OnInit, OnDestroy {
         this.dataLoadingService.updateElements(result);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.filterSubscription.unsubscribe();
   }
 }
